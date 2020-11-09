@@ -5,11 +5,19 @@ runtime: shiny_prerendered
 ---
 
 ```{r, message=F, warning=F, echo=F}
+# uncomment the following if learnr and tidyverse are not installed on your machine:
+# install.packages("learnr")
+# install.packages("tidyverse")
+
 require(learnr)
 require(tidyverse)
 ```
 
 ## "R"efresher
+
+We'll be going over the very basic points of R that you've learned in previous coursework.
+
+### What is R?
 
 R is a scripting language commonly used by statisticians, data scientists, and people that need to deal with data. To deal with data, R has a lot of different ways that it can represent data, called data structures. Which ones are data structures in R?
 
@@ -18,10 +26,12 @@ question(
     "Which ones are data structures in R?",
     answer("data frame", T), answer("vector", T), answer("list", T), answer("factor", T), answer("matrix", T), answer("array", T),
     type = "multiple",
-    correct = "Correct! All of them are data structure in R.",
-    incorrect = "Incorrect! All of them are data structure in R."
+    correct = "Correct! All of them are data structures in R.",
+    incorrect = "Incorrect! All of them are data structures in R."
 )
 ```
+
+
 
 ### R as a Calculator
 
