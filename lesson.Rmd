@@ -13,7 +13,7 @@ require(learnr)
 require(tidyverse)
 ```
 
-## "R"efresher
+## "R"efresher (pre-work)
 
 We'll be going over the very basic points of R that you've learned in previous coursework.
 
@@ -31,7 +31,7 @@ question(
 )
 ```
 
-
+Whenever we create something in R, we can call it an object, and that language will be used in later in the lesson. For example, even just entering `3` into R means that we have created an object albiet it is a temporary object that R won't remember.
 
 ### R as a Calculator
 
@@ -48,7 +48,7 @@ I'm trying to calculate $\frac{1+2+3}{2}$, but my code below isn't calculating t
 (1 + 2 + 3) / 2
 ```
 
-### Assignment
+### Assignment and reference
 
 R can also remember the values of things. Remember, we can do this by using `<-` or `=`.
 
@@ -59,17 +59,19 @@ y = 3 * 3
 y
 ```
 
+And remember what we said about objects earlier? We just created objects that are given a name to refer to them. So, now `x` refers to a vector with one value of `2` and `y` refers to a vector with one value of `9`. Note that the objects themselves ***are not named*** (visualize this as x pointing to a vector; `x` is now just a handy name for R to refer to an object). When we do call `x`, it refers to the object that `x` is pointing to and retrieves the object.
+
 ### ggplot review
 
-R can also create visualizations, and a preferred way of creating visualization in R is by using the `ggplot2` package. All a package is in R (and in programming) is a collection of functions or other related things that allow you to use R at a much higher level (you don't need to know how the code is written for them), and for the most part, packages make your life a lot more easier since you can Google how to do something and there is most likely one that fulfills your needs.
+R can also create visualizations, and a preferred way of creating visualization in R is by using the `ggplot2` package (which is also a part of the tidyverse). All a package is in R (and in programming) is a collection of functions or other packages that allow you to use the language at a much higher level (you don't need to know how the code is written for them), and for the most part, packages make your life a lot more easier since you can Google how to do something that isn't part of what you know how to do and there is most likely one that fulfills your needs.
 
-Now, back to ggplot, remember that to make a plot
+Now, back to ggplot; remember that to make a plot:
 
-1. You have to first use `ggplot`.
+1. You have to first call the `ggplot` function, so you have to do `ggplot(...)` and fill in the `...` with your arguments.
 
-2. You have to specify what kind of visualization ggplot should create. These would be like `geom_histogram`, `geom_point`, `geom_boxplot`, etc.
+2. You have to specify what kind of visualization ggplot should create. These would be like `geom_histogram`, `geom_point`, `geom_boxplot`, etc. Likewise, these are all functions, so you have to do `geom_histogram(...)` and fill in the `...` with your arguments.
 
-3. Make sure you specify the data (as a data frame) and aesthetic mapping in either `ggplot` or the function that specifies the visualization. And an aesthetic mapping is simply specifying the variables you want in a visualization.
+3. Make sure you specify the data (as a data frame) and aesthetic mapping in either `ggplot` or the function that specifies the visualization. And an aesthetic mapping is simply specifying the variables you want in a visualization. The aesthetic mapping usually takes the form of a `mapping` argument in the `ggplot` function or a `geom_` function and you have to supply a call to `aes` with your desired variables as the arguments.
 
 As an example of what I mean by these points, take the following as example:
 
@@ -80,11 +82,13 @@ ggplot(mapping = aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(data = iri
 ggplot() + geom_point(data = iris, mapping = aes(x = Sepal.Length, y = Sepal.Width))
 ```
 
+How are the lines of code above similar? Different?
+
 All of the plots are clearly the same, but the arguments were passed into different functions.
 
 For more context on this behavior, consider the following plots (purely for demonstration; you'd never want to make a confusing plots like the last one):
 
-```{r}
+```{r inheritance-demo, exercise=TRUE}
 ggplot(data = iris, mapping = aes(x = Sepal.Length)) + geom_point(mapping = aes(y = Sepal.Width))
 ggplot(data = iris, mapping = aes(x = Sepal.Length)) + geom_point(mapping = aes(y = Petal.Width))
 ggplot(data = iris, mapping = aes(x = Sepal.Length)) + geom_point(mapping = aes(y = Sepal.Width)) + geom_point(mapping = aes(y = Petal.Width))
@@ -92,24 +96,43 @@ ggplot(data = iris, mapping = aes(x = Sepal.Length)) + geom_point(mapping = aes(
 
 What do you notice about the behavior of the aesthetic (or, in general, anything that can be put into `ggplot` or a function specifying a visualization type)?
 
+Read the code below:
+
+```{r eval=F}
+data <- data.frame(x = 1:10, y = 1:10)
+
+ggplot(data, aes(x, y)) + geom_point() + 
+    geom_smooth(method = ‘lm’)
+```
+
+Answer these question about the code
+
+* What does the `aes` function in the example tell ggplot to do?
+* What does `geom_point` do?
+* How about `geom_smooth`?
+
+### dplyr review
+
+
+
 ## ggplot2 ideology
 
 ### Layers
 
 All graphics made with ggplot are composed of layers. Of these layers, these are the most common layers that you'll encounter and questions to consider if you want to utilize them:
 
-Layer       | Description and Guiding questions
+Layer       | Description and Guiding Questions
 ----------  | -------------------------------------------
 geometry    | Geometry to represent the data visually; what kind of plot do you want to create?
 statistics  | An alternative to geometry
-scales      | How numbers in data are converted to numbers on screen; are there any changes that you want to make to the tick marks on your axes or any changes relating to how the data is represented in the visualization?
-labels      | Titles and axis labels; do you want to change the titles and axis labels so that it's more readable to a human?
+scales      | How numbers in data are converted to numbers on screen; are there any changes that you want to make to the tick marks on your axes or any changes relating to how the data is represented visually?
+labels (part of scales)      | Titles and axis labels; do you want to change the titles and axis labels so that it's more readable to a human?
 guides      | Legend settings; do you want to edit your legend?
 annotations | Additional geoms that are not mapped to data; do you want to add any text or other data that will enhance your visualization?
 coordinates | Coordinate systems (Cartesian, logarithmic, polar)
 facets      | Side-by-side panels; do you want to separate data in a different visualizations by a variable in your data frame?
 
-We've already been utilizing the first type of layer in our past examples, so `geom_point`, `geom_histogram`, `geom_...` are all geometry layers (hence `geom`). Now, you may notice that overtime we create plots, we have to use the `+` operator to add geometry layers. It may seem counter intuitive, but think of it like this: you want to add layers to something, so you just simply add it to everything else. So, if you want to add a layer to a plot, you'll have to add it to the previous parts.
+We've already been utilizing the first type of layer in our past examples, so `geom_point`, `geom_histogram`, `geom_...` are all geometry layers (hence the `geom` in the functions' names). Now, you may notice that when we create plots, we have to use the `+` operator to add layers. It may seem weird, but think of it like this: you want to add layers to something, so you just simply add it to everything else. So, if you want to add a layer to a plot, you'll have to add it to the previous parts.
 
 ### The ggplot object
 
@@ -125,13 +148,155 @@ Suppose that you are using the `cars` data set in R, and it has variables `speed
 ggplot(cars, aes(speed, dist)) + geom_point() + labs(title = "Distance (miles) vs. Speed (mph)", x = "Speed (mph)", y = "Distance (miles)")
 ```
 
-What types of layers did I use?
-
-I used a data, aesthetic, geometry, and labels layer. Can you recreate the visualization that I made?
+```{r layer-quiz, echo = F}
+question(
+    "What types of layers did I use?",
+    answer("geometry", T), answer("statistic", F), answer("scale", F), answer("label", T), answer("guides", F), answer("annotation", F), answer("coordinate", F), answer("facet", F),
+    type = "multiple",
+    correct = "Correct! I used those layers!",
+    incorrect = "Incorrect! I used a geom layer to get the points on there and a label layer to change the axis labels"
+)
+```
 
 *Hint: I used `labs` as for my labels layer; it can take in `title`, `x`, and `y` arguments!*
 
-```{r recreate-1, exercise = TRUE}
+```{r create-1, exercise = TRUE}
 # replace the ... with your code! (you may not have to write code in all of them; you can just delete the ...)
 ggplot(...) + geom_point(...) + labs(...)
+```
+
+<div id="create-1-hint">
+**Hint**: I used `labs` as my labels layer; it can take in `title`, `x`, and `y` arguments!
+</div>
+
+Next, suppose that I want to create a visualization of the `cars` data set. Specifically, a histogram of the `dist` values. I then also want to make sure my plot is labeled accurately. Finally, I also want to make the x-axis show the values in intervals of 10. Create this visualization in the area below.
+
+```{r create-2, exercise = TRUE}
+```
+
+<div id="create-2-hint">
+**Hint**: To change the intervals of values (or rather, the position scales), take a look back at the table listing all the layers; can you identify the types of layer?
+
+Once you've identified the type; take a look through https://ggplot2.tidyverse.org/reference/ and try to find a specific function you can use! (This is a common process of trying to create visualizations, so it is frustrating especially when you start out and have no idea what features you can use).
+</div>
+
+## Evaluation
+
+### Standard Evaluation
+
+In programming, everything that we run has to be evaluated. This means that the language has to look up every value or name that is given in the code. Standard evaluation is when the language properly follows the conventions of looking up everything when you read the code as a human. For example, when I run `x <- 1`, I expect for `x` to output 1. Or when I have the data `cars`:
+
+```{r echo = F}
+rmarkdown::paged_table(cars)
+```
+
+I expect running `dist` to error out since `dist` is only present in the data frame; outside of the data frame, R doesn't know about it. So the only way that we can get dist is by specifying `dist` from `cars` ie. `cars$dist`. 
+
+Previously, I told you that R doesn't remember what created the value for something? When we did `x <- 3 * 3`, R, doesn't remember that `3 * 3` created the value for `x` since it evaluates code before assigning values.
+
+Likewise, when I call a function, I expect for R to evaluate its arguments before running the function itself. So take the following example:
+
+```{r}
+x <- c(1,2,3,4,5,6,7)
+mean(x)
+```
+
+In human terms, I expect for `x` to first give us `c(1,2,3,4,5,6,7)` before we can actually do anything in `mean`, so if you were a human trying to run code, you would translate `mean(x)` to `mean(c(1,2,3,4,5,6,7))` before actually finding the mean. And I would expect this behavior to happen with any number of arguments; for all arguments to be evaluated before actually running the code. 
+
+### Nonstandard Evaluation
+
+Nonstandard evaluation is what happens when our code runs in a way that violates our understanding of standard evaluation. In this case, arguments to functions aren't evaluated before the function runs. 
+
+For example:
+
+```{r non-stand-ex, exercise=TRUE}
+filter(cars, dist > 50)
+```
+
+Here, we use the `filter` function from the dplyr package. We can see that while the `cars` inside our call to `filter` is standard evaluation (we can easily replace `cars` with the contents of the data frame). However, is it possible to evaluate `dist > 50`?
+
+As we've said before, we don't know what `dist` is outside the context of a data frame, so `filter(cars, dist > 50)` is an example of nonstandard evaluation. Clearly, the function call works and everything is being evaluated by R, but as humans, we don't know what is happening at first glance through standard evaluation.
+
+We can see instances of nonstandard evaluation across the tidyverse; the rationale for this is that it's more readable to humans who don't need to understand the difference between standard and nonstandard evaluations. Nevertheless, it's still important to know exactly why you can do as you do in the certain functions (such as those in the tidyverse) versus all  the other functions just so that you don't get confused in future situations when you have to decide/assess where the problems in your code are.
+
+When considering on how to approach functions that do use nonstandard evaluation versues those that use standard evaluation, take a look at the documentation for a function. For example, you can look at the documentation for the `select` function in the dplyr package by doing `?select` when the package is loaded or `?dpylr::select` when the package isn't loaded:
+
+```
+Usage
+select(.data, ...)
+Arguments
+
+.data	
+
+A data frame, data frame extension (e.g. a tibble), or a lazy data frame (e.g. from dbplyr or dtplyr). See Methods, below, for more details.
+
+...	
+
+<tidy-select> One or more unquoted expressions separated by commas. Variable names can be used as if they were positions in the data frame, so expressions like x:y can be used to select a range of variables.
+```
+
+`select` gives us a subset of the data frame according the `...` argument, which you can put an unlimited amount of arguments into. The `...` also tells us that we can use "unquoted expressions", so that indicates that nonstandard evaluation is used since we don't have to care about whether we can access the variables in the data frames when calling the function. And obviously, if you do mess up, R will error out and tell you did mess up; at this point, you should take a look at the documentation to see how to properly use a function if you do mess up.
+
+R is littered with tons of functions that use nonstandard evaluation and you can see them most prominently in any of the tidyverse packages, including the ggplot code. Go back to the code that you typed earlier to make visualizations and identify what parts in the code use which type of evaluation.
+
+```{r evaluation-q, echo=F}
+quiz(
+    question(
+        "`ggplot(cars)`",
+        answer("standard", T), answer("non-standard", F),
+        type = "learnr_radio",
+        correct = "Correct! This is standard evaluation since I clearly know that cars is a data frame!",
+        incorrect = "Incorrect! This is standard evaluation since I clearly know that cars is a data frame!"
+    ),
+    question(
+        "`filter(cars, dist > 3)`",
+        answer("standard", F), answer("non-standard", T),
+        type = "learnr_radio",
+        correct = "Correct! This is non-standard evaluation since I don't know what `dist` is outside the context of the data set.",
+        incorrect = "Incorrect! This is non-standard evaluation since I don't know what `dist` is outside the context of the data set."
+    ),
+    question(
+        "`read.csv('somedataset.csv')` (assume that `somedataset.csv` exists on your computer)",
+        answer("standard", T), answer("non-standard", F),
+        type = "learnr_radio",
+        correct = "Correct! This is standard evaluation since you don't need to find `somedataset.csv` in R, rather it is the name of a file you are telling R to find.",
+        incorrect = "Incorrect! This is standard evaluation since you don't need to find `somedataset.csv` in R, rather it is the name of a file you are telling R to find."
+    ),
+    question(
+        "```x <- 1:10\nggplot() + geom_histogram(aes(x=x))```",
+        answer("standard", T), answer("non-standard", F),
+        type = "learnr_radio",
+        correct = "Correct! This is standard evaluation since I clearly know that `x` is a vector and I can pinpoint the exact value of `x`",
+        incorrect = "Incorrect! This is standard evaluation since I clearly know that `x` is a vector and I can pinpoint the exact value of `x`."
+    ),
+    question(
+        "`y <- rep(c(T,F), 25)\nfilter(cars, y)`",
+        answer("standard", T), answer("non-standard", F),
+        type = "learnr_radio",
+        correct = "Correct! This is standard evaluation since I clearly know what `cars` and `y` are.",
+        incorrect = "Incorrect! This is standard evaluation since I clearly know that `cars` and `y` are."
+    ),
+    question(
+        "`select(cars, 'dist')`",
+        answer("standard", T), answer("non-standard", F),
+        type = "learnr_radio",
+        correct = "Correct! This is standard evaluation since I am taking in the string `'dist'`, since we don't need to know more than that `'dist'` is a string, the code doesn't violate standard evaluation.",
+        incorrect = "Incorrect! This is standard evaluation since I am taking in the string `'dist'`, since we don't need to know more than that `'dist'` is a string, the code doesn't violate standard evaluation."
+    ),
+    question(
+        "`library(ggplot2)`",
+        answer("standard", F), answer("non-standard", T),
+        type = "learnr_radio",
+        correct = "Correct! This is non-standard evaluation since we have no idea what `ggplot2` is (from a computer's perspective).",
+        incorrect = "Incorrect! This is non-standard evaluation since we have no idea what `ggplot2` is (from a computer's perspective)."
+    ),
+    question(
+        "`library('ggplot2')`",
+        answer("standard", T), answer("non-standard", F),
+        type = "learnr_radio",
+        correct = "Correct! This is standard evaluation since `'ggplot2'` is just a string.",
+        incorrect = "Incorrect! This is standard evaluation since `'ggplot2'` is just a string."
+    ),
+    caption = "Standard or Non-Standard?"
+)
 ```
