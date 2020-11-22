@@ -9,8 +9,8 @@ runtime: shiny_prerendered
 # install.packages("learnr")
 # install.packages("tidyverse")
 
-library(learnr)
-library(tidyverse)
+require(learnr)
+require(tidyverse)
 ```
 
 For this activity, assume that dplyr and ggplot2 are already loaded in.
