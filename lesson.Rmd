@@ -9,9 +9,11 @@ runtime: shiny_prerendered
 # install.packages("learnr")
 # install.packages("tidyverse")
 
-require(learnr)
-require(tidyverse)
+library(learnr)
+library(tidyverse)
 ```
+
+For this activity, assume that dplyr and ggplot2 are already loaded in.
 
 ## "R"efresher (pre-work)
 
@@ -31,7 +33,7 @@ question(
 )
 ```
 
-Whenever we create something in R, we can call it an object, and that language will be used in later in the lesson. For example, even just entering `3` into R means that we have created an object albiet it is a temporary object that R won't remember.
+Whenever we create something in R, we can call it an object, and that language will be used in later in the lesson. For example, even just entering `3` into R means that we have created an object albeit it is a temporary object that R won't remember.
 
 ### R as a Calculator
 
@@ -50,7 +52,7 @@ I'm trying to calculate $\frac{1+2+3}{2}$, but my code below isn't calculating t
 
 ### Assignment and reference
 
-R can also remember the values of things. Remember, we can do this by using `<-` or `=`.
+R can also remember the values of things. Remember, we can do this by using `<-` or `=` (though the preferred way to do this among many people is `<-`).
 
 ```{r assignment-demo, exercise=TRUE}
 x <- 1 + 1
@@ -102,7 +104,7 @@ Read the code below:
 data <- data.frame(x = 1:10, y = 1:10)
 
 ggplot(data, aes(x, y)) + geom_point() + 
-    geom_smooth(method = ‘lm’)
+    geom_smooth(method = 'lm')
 ```
 
 Answer these question about the code
@@ -113,9 +115,38 @@ Answer these question about the code
 
 ### dplyr review
 
+dplyr is another package that many people prefer to use and it is also in the tidyverse. The reason for it is due to its simplistic nature and human readable syntax. If the package didn't exist, you would be forced to use an unholy amount of `[]` or `$` to do a lot of simple things. Compare filtering out the the `cars` data set for all observations with `dist` that are greater than 50.
 
+```{r equal-but-hard, exercise = TRUE}
+cars[cars$dist > 50,]
+```
+```{r equal-but-ez, exercise = TRUE}
+filter(cars, dist > 50)
+```
+
+At this level, both examples are easily interpretable, but imagine having much more things that you have to do to a data frame; things will get hectic pretty fast.
+
+For the most part, you can navigate yourself through the functions in dplyr through searching up your problems or asking a question on Stack Overflow. You can also use `?[function]` (replacing `[function]`) with your desired function name to see how to use the function and also examples of the function being used.
+
+#### The pipeline operator `%>%`
+
+`%>%` allows you to 'string' several functions together whilst allowing a readable workflow for us humans to follow on. Compare:
+
+```{r hard-to-read, exercise = TRUE}
+mutate(select(filter(cars, dist > 50), dist), z = (dist - mean(dist)) / sd(dist))
+```
+```{r ez-to-read, exercise = TRUE}
+cars %>%
+    filter(dist > 50) %>%
+    select(dist) %>%
+    mutate(z = (dist - mean(dist)) / sd(dist))
+```
+
+You may also notice that the first argument of every one of these functions (`filter`, `select`, `mutate`) is supposed to be `.data`. The pipeline 'pipes' the preceding data frame from top to bottom into the next function, so you don't need to explicitly give a `.data` argument.
 
 ## ggplot2 ideology
+
+This package is dubbed as is since it is based on the "Grammar of Graphics" (a book that describes a systematic way of visualization) and it plots, thus "ggplot". Since ggplot2 is based on the "Grammar of Graphics", it is in some way its own language and so it has weird syntax that you have to follow.
 
 ### Layers
 
@@ -125,10 +156,10 @@ Layer       | Description and Guiding Questions
 ----------  | -------------------------------------------
 geometry    | Geometry to represent the data visually; what kind of plot do you want to create?
 statistics  | An alternative to geometry
-scales      | How numbers in data are converted to numbers on screen; are there any changes that you want to make to the tick marks on your axes or any changes relating to how the data is represented visually?
+scales      | How values in data are visually represented on screen; are there any changes that you want to make to the tick marks on your axes or any changes relating to how the data is represented visually?
 labels (part of scales)      | Titles and axis labels; do you want to change the titles and axis labels so that it's more readable to a human?
 guides      | Legend settings; do you want to edit your legend?
-annotations | Additional geoms that are not mapped to data; do you want to add any text or other data that will enhance your visualization?
+annotations | Additional geoms that are not mapped to data; do you want to add any text or other data (not in a data frame) that will enhance your visualization?
 coordinates | Coordinate systems (Cartesian, logarithmic, polar)
 facets      | Side-by-side panels; do you want to separate data in a different visualizations by a variable in your data frame?
 
@@ -158,7 +189,7 @@ question(
 )
 ```
 
-*Hint: I used `labs` as for my labels layer; it can take in `title`, `x`, and `y` arguments!*
+Now try to recreate the plot!
 
 ```{r create-1, exercise = TRUE}
 # replace the ... with your code! (you may not have to write code in all of them; you can just delete the ...)
@@ -177,10 +208,12 @@ Next, suppose that I want to create a visualization of the `cars` data set. Spec
 <div id="create-2-hint">
 **Hint**: To change the intervals of values (or rather, the position scales), take a look back at the table listing all the layers; can you identify the types of layer?
 
-Once you've identified the type; take a look through https://ggplot2.tidyverse.org/reference/ and try to find a specific function you can use! (This is a common process of trying to create visualizations, so it is frustrating especially when you start out and have no idea what features you can use).
+Once you've identified the type; take a look through https://ggplot2.tidyverse.org/reference/ and try to find a specific function you can use! (This is a common process of trying to create visualizations, so it is frustrating especially when you start out and have no idea what features you can use). When finding the function, consider the type of variable `dist` is; is it continuous or discrete?
 </div>
 
 ## Evaluation
+
+For this part of the activity, try putting yourself in the perspective of a machine trying to run code and understand it. When using R in instance of which you have to do more complicated things with other packages outside of the tidyverse, it's important that you can recognize subtle differences in how functions between packages can function so that when you write code, you won't be confused as to why you did worked.
 
 ### Standard Evaluation
 
@@ -192,7 +225,7 @@ rmarkdown::paged_table(cars)
 
 I expect running `dist` to error out since `dist` is only present in the data frame; outside of the data frame, R doesn't know about it. So the only way that we can get dist is by specifying `dist` from `cars` ie. `cars$dist`. 
 
-Previously, I told you that R doesn't remember what created the value for something? When we did `x <- 3 * 3`, R, doesn't remember that `3 * 3` created the value for `x` since it evaluates code before assigning values.
+Previously, I told you that R doesn't remember what created the value for something? When we did `x <- 3 * 3`, R doesn't remember that `3 * 3` created the value for `x` since it evaluates code before assigning values .
 
 Likewise, when I call a function, I expect for R to evaluate its arguments before running the function itself. So take the following example:
 
@@ -300,3 +333,11 @@ quiz(
     caption = "Standard or Non-Standard?"
 )
 ```
+
+## Other notes
+
+For those interested, the reason why non-standard evaluation exists is due to the fact that R uses lazy evaluation. So, I've actually been lying to you that R evaluates arguments before evaluating them in functions. R actually evaluates arguments as the function runs. In a way, this is the easiest way to differentiate between non/standard evaluation. So this means that R doesn't have to know what everything means until it runs the code that interprets it (so the code inside the functions make it so that R understands exactly what you want to do).
+
+We only care about non-standard evaluation because users with no experience with programming do not understand how significant this aspect of the language affects how they write code. We also don't see non-standard evaluation in most other popular programming languages, so it is a point of criticism that R allows it to exist.
+
+If you're interested in more of these concepts in R, feel free to contact me at edwardchang116@berkeley.edu.
