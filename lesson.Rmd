@@ -2,15 +2,19 @@
 title: "Getting Around the tidyverse – Deconstructing Syntax and ggplot2"
 output: learnr::tutorial
 runtime: shiny_prerendered
+description: >
+    Identify instances of non-standard evaluation and standard evaluation to differentiate between the syntax used between packages/functions.
+    Apply knowledge of ggplot layers to create visualizations that match given criteria
+    Explain the reason for the usage of individual ggplot layers.
 ---
 
-```{r, message=F, warning=F, echo=F}
+```{r setup, include = FALSE}
 # uncomment the following if learnr and tidyverse are not installed on your machine:
 # install.packages("learnr")
 # install.packages("tidyverse")
 
-require(learnr)
-require(tidyverse)
+library(learnr)
+library(tidyverse)
 ```
 
 For this activity, assume that dplyr and ggplot2 are already loaded in.
